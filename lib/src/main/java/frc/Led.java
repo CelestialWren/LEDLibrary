@@ -75,6 +75,7 @@ public class Led extends SubsystemBase {
   }
   public void stopAnimation(){
     runningAutomation = false;
+    currentAnimation.reset();
   }
 
   public int getStripLength(){

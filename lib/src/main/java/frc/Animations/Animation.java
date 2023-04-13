@@ -24,7 +24,7 @@ public abstract class Animation {
         generatedHashmap.clear();
     }
 
-    public Animation(Led ledStrip, int minUpdatePeriod){
+    public Animation(Led ledStrip, double minUpdatePeriod){
         time.start();
         this.minUpdatePeriod = minUpdatePeriod;
         LEDStripLength = ledStrip.getStripLength();
