@@ -22,4 +22,4 @@ repositories {
 ```
 4. Find dependencies block and add ```implementation name:'[insert name of JAR here, omit the .jar]'``` after the ```implementation wpi.java.vendor.java()``` line
 
-5. Add ```!libs/*.jar``` to your .gitignore to allow the file to be added to your repo. (or analagous action for other version tracking software)
+5. Add ```!libs/*.jar``` to your .gitignore to allow the file to be added to your repo. (or analogous action for other version tracking software)
