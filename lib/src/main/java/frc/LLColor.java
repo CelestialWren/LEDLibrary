@@ -63,9 +63,9 @@ public class LLColor extends Color {
   public HashMap<Character, Integer> toHSV() {
     HashMap<Character, Integer> map = new HashMap<Character, Integer>();
     float[] hsv = java.awt.Color.RGBtoHSB(getRed(), getGreen(), getBlue(), null);
-    map.put('H', (int) (hsv[0]) * 180);
-    map.put('S', (int) (hsv[1]) * 255);
-    map.put('V', (int) (hsv[2]) * 255);
+    map.put('H', (int) MathUtil.inputModulus((double)((hsv[0]) * 180),0 , HUE_MAX));
+    map.put('S', (int) MathUtil.inputModulus((double)((hsv[1]) * 255),0 , SATURATION_MAX));
+    map.put('V', (int) MathUtil.inputModulus((double)((hsv[2]) * 255),0 , VALUE_MAX));
     return map;
   }
 

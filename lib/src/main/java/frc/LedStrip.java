@@ -11,11 +11,13 @@ import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Animations.Animation;
 
 public class LedStrip extends SubsystemBase {
+  private final AddressableLEDSim ledSim;
   private final AddressableLED led;
   private final AddressableLEDBuffer ledBuffer;
   private Animation currentAnimation;
@@ -27,9 +29,12 @@ public class LedStrip extends SubsystemBase {
   public LedStrip(int DIO_Port, int stripLength) {
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
+
     led.setLength(ledBuffer.getLength());
     setEntireStripToColor(Color.kBlack);
     led.start();
+    ledSim.setRunning(true);
   }
 
   public LedStrip(int DIO_Port, int stripLength, LedScheduler scheduler) {
@@ -38,17 +43,23 @@ public class LedStrip extends SubsystemBase {
 
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
+
     led.setLength(ledBuffer.getLength());
     setEntireStripToColor(Color.kBlack);
     led.start();
+    ledSim.setRunning(true);
   }
 
   public LedStrip(int DIO_Port, int stripLength, Color colorToIntializeTo) {
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
+
     led.setLength(ledBuffer.getLength());
     setEntireStripToColor(colorToIntializeTo);
     led.start();
+    ledSim.setRunning(true);
   }
 
   public LedStrip(int DIO_Port, int stripLength, Color colorToIntializeTo, LedScheduler scheduler) {
@@ -57,9 +68,12 @@ public class LedStrip extends SubsystemBase {
 
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
+
     led.setLength(ledBuffer.getLength());
     setEntireStripToColor(colorToIntializeTo);
     led.start();
+    ledSim.setRunning(true);
   }
 
   @Override
@@ -72,8 +86,7 @@ public class LedStrip extends SubsystemBase {
       try {
         setStripToMultipleColors(currentAnimation.update());
       } catch (Exception e) {
-        // TODO: temporary debuging code
-        System.out.println("The LED animation returned null(hopefuly)");
+        System.out.println("The LED animation returned null");
       }
   }
 
@@ -88,12 +101,7 @@ public class LedStrip extends SubsystemBase {
   public void setStripToMultipleColors(HashMap<Integer, Color> rangesToSetToColors) {
     runningAutomation = false;
     int stripPosition = 0;
-    ArrayList<Integer> colorKeysSorted = new ArrayList<Integer>();
-    // Need to sort so the LEDs do not overwrite each other.
-    for (int colorEndToSort : rangesToSetToColors.keySet())
-      colorKeysSorted.add(colorEndToSort);
-
-    colorKeysSorted.sort(Comparator.naturalOrder());
+    ArrayList<Integer> colorKeysSorted = sortStripValues(rangesToSetToColors);
 
     for (int colorEndPoint : colorKeysSorted) {
       for (; stripPosition < colorEndPoint; stripPosition++) {
@@ -105,7 +113,6 @@ public class LedStrip extends SubsystemBase {
 
   public ArrayList<Integer> sortStripValues(HashMap<Integer, Color> pattern) {
     ArrayList<Integer> colorKeysSorted = new ArrayList<Integer>();
-    // Need to sort so the LEDs do not overwrite each other.
     for (int colorEndToSort : pattern.keySet())
       colorKeysSorted.add(colorEndToSort);
       

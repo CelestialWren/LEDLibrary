@@ -20,6 +20,9 @@ public class RaceAnimation extends Animation {
         this.raceColor = raceColor;
         this.raceLength = raceLength;
         this.raceGap = raceGap;
+        if((raceLength > LEDStripLength) || (raceGap > LEDStripLength)){
+            throw new IllegalArgumentException("The length of the pattern to display is longer than the LED Strip.");
+        }
     }
 
     @Override

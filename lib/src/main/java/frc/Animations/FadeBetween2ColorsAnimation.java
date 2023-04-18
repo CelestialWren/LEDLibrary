@@ -12,11 +12,8 @@ public class FadeBetween2ColorsAnimation extends Animation {
     LLColor secondColor;
     LLColor currentColor;
 
-    HashMap<Character, Integer> firstColorHSV;
-    HashMap<Character, Integer> secondColorHSV;
-    HashMap<Character, Integer> currentColorHSV;
-
     boolean isgoingToSecond = true;
+
     /**
      * 
      * @param ledStrip    The LED strip this is displaying on.
@@ -25,14 +22,10 @@ public class FadeBetween2ColorsAnimation extends Animation {
      */
     public FadeBetween2ColorsAnimation(LedStrip ledStrip, LLColor firstColor, LLColor secondColor) {
         super(ledStrip);
-        currentColorHSV = firstColor.toHSV();
         generatedHashmap.put(super.LEDStripLength, firstColor);
 
         this.firstColor = firstColor;
         this.secondColor = secondColor;
-
-        firstColorHSV = firstColor.toHSV();
-        secondColorHSV = secondColor.toHSV();
     }
 
     /**
@@ -45,20 +38,15 @@ public class FadeBetween2ColorsAnimation extends Animation {
     public FadeBetween2ColorsAnimation(LedStrip ledStrip, LLColor firstColor, LLColor secondColor,
             double minUpdatePeriod) {
         super(ledStrip, minUpdatePeriod);
-        currentColorHSV = firstColor.toHSV();
         generatedHashmap.put(super.LEDStripLength, firstColor);
 
         this.firstColor = firstColor;
         this.secondColor = secondColor;
-
-        firstColorHSV = firstColor.toHSV();
-        secondColorHSV = secondColor.toHSV();
     }
 
     public void reset() {
         super.reset();
         currentColor = firstColor;
-        currentColorHSV = currentColor.toHSV();
         isgoingToSecond = true;
 
         generatedHashmap.put(LEDStripLength, currentColor);
@@ -66,30 +54,29 @@ public class FadeBetween2ColorsAnimation extends Animation {
 
     @Override
     public HashMap<Integer, Color> generatePattern() {
+        if (currentColor == secondColor)
+            isgoingToSecond = false;
+        else if (currentColor == firstColor)
+            isgoingToSecond = true;
         if (isgoingToSecond) {
-            currentColor = LLColor.fromHSV((currentColorHSV.get('H') +
-                    evalIncrementDirection(currentColorHSV.get('H'), secondColorHSV.get('H'), LLColor.HUE_MAX)),
-                    (currentColorHSV.get('S') +
-                            evalIncrementDirection(currentColorHSV.get('S'), secondColorHSV.get('S'),
+            currentColor = LLColor.fromHSV((currentColor.getHue() +
+                    evalIncrementDirection(currentColor.getHue(), secondColor.getHue(), LLColor.HUE_MAX)),
+                    (currentColor.getSaturation() +
+                            evalIncrementDirection(currentColor.getSaturation(), secondColor.getSaturation(),
                                     LLColor.SATURATION_MAX)),
-                    (currentColorHSV.get('H') +
-                            evalIncrementDirection(currentColorHSV.get('V'), secondColorHSV.get('V'),
+                    (currentColor.getValue() +
+                            evalIncrementDirection(currentColor.getValue(), secondColor.getValue(),
                                     LLColor.VALUE_MAX)));
-            if (currentColor == secondColor)
-                isgoingToSecond = false;
         } else {
-            currentColor = LLColor.fromHSV((currentColorHSV.get('H') +
-                    evalIncrementDirection(currentColorHSV.get('H'), firstColorHSV.get('H'), LLColor.HUE_MAX)),
-                    (currentColorHSV.get('S') +
-                            evalIncrementDirection(currentColorHSV.get('S'), firstColorHSV.get('S'),
+            currentColor = LLColor.fromHSV((currentColor.getHue() +
+                    evalIncrementDirection(currentColor.getHue(), firstColor.getHue(), LLColor.HUE_MAX)),
+                    (currentColor.getSaturation() +
+                            evalIncrementDirection(currentColor.getSaturation(), firstColor.getSaturation(),
                                     LLColor.SATURATION_MAX)),
-                    (currentColorHSV.get('H') +
-                            evalIncrementDirection(currentColorHSV.get('V'), firstColorHSV.get('V'),
+                    (currentColor.getValue() +
+                            evalIncrementDirection(currentColor.getValue(), firstColor.getValue(),
                                     LLColor.VALUE_MAX)));
-            if (currentColor == firstColor)
-                isgoingToSecond = true;
         }
-        currentColorHSV = currentColor.toHSV();
         generatedHashmap.clear();
         generatedHashmap.put(LEDStripLength, currentColor);
         return generatedHashmap;
@@ -107,6 +94,6 @@ public class FadeBetween2ColorsAnimation extends Animation {
      * @return The increment or decrement, as 0, 1, or -1.
      */
     private int evalIncrementDirection(int firstValue, int secondValue, int maxValue) {
-        return -(int) Math.signum(MathUtil.inputModulus(firstValue - secondValue, -(maxValue / 2), (maxValue / 2)));
+        return (int) Math.signum(MathUtil.inputModulus(firstValue - secondValue, -(maxValue / 2), (maxValue / 2)));
     }
 }

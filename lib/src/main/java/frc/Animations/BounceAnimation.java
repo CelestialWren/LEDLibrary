@@ -25,7 +25,7 @@ public class BounceAnimation extends Animation {
         this.bounceLength = bounceLength;
         bouncePositionUpper = bounceLength;
         if(bounceLength > LEDStripLength)
-            throw new IllegalArgumentException("The length of the pattern to display is longer than the LED Strip");
+            throw new IllegalArgumentException("The length of the pattern to display is longer than the LED Strip.");
     }
 
     @Override

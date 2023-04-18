@@ -6,7 +6,6 @@ import frc.LLColor;
 import frc.LedScheduler;
 import frc.LedStrip;
 import frc.Animations.Animation;
-import frc.Animations.BooleanAnimation;
 import frc.Animations.BounceAnimation;
 import frc.Animations.RaceAnimation;
 import frc.Animations.RainbowFadeAnimation;
