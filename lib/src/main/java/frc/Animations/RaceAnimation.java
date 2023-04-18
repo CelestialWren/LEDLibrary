@@ -7,14 +7,14 @@ package frc.Animations;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.Led;
+import frc.LedStrip;
 
 /** Add your docs here. */
 public class RaceAnimation extends Animation {
     private final Color backgroundColor, raceColor;
     private final int raceLength, raceGap;
 
-    public RaceAnimation(Led ledStrip, Color backgroundColor, Color raceColor, int raceLength, int raceGap) {
+    public RaceAnimation(LedStrip ledStrip, Color backgroundColor, Color raceColor, int raceLength, int raceGap) {
         super(ledStrip);
         this.backgroundColor = backgroundColor;
         this.raceColor = raceColor;

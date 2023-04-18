@@ -2,32 +2,28 @@ package frc.Animations;
 
 import java.util.HashMap;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.LLLColor;
-import frc.Led;
+import frc.LLColor;
+import frc.LedStrip;
 
 public class FadeBetween2ColorsAnimation extends Animation {
-    LLLColor firstColor;
-    LLLColor secondColor;
-    LLLColor currentColor;
+    LLColor firstColor;
+    LLColor secondColor;
+    LLColor currentColor;
 
-    int deltaHue;
-    int deltaSaturation;
-    int deltaValue;
+    HashMap<Character, Integer> firstColorHSV;
+    HashMap<Character, Integer> secondColorHSV;
+    HashMap<Character, Integer> currentColorHSV;
 
     boolean isgoingToSecond = true;
-
-    HashMap<String, Integer> firstColorHSV;
-    HashMap<String, Integer> secondColorHSV;
-    HashMap<String, Integer> currentColorHSV;
-
     /**
      * 
-     * @param ledStrip The LED strip this is displaying on.
-     * @param firstColor The color it starts the fade on.
+     * @param ledStrip    The LED strip this is displaying on.
+     * @param firstColor  The color it starts the fade on.
      * @param secondColor The color it initially fades to.
      */
-    public FadeBetween2ColorsAnimation(Led ledStrip, LLLColor firstColor, LLLColor secondColor) {
+    public FadeBetween2ColorsAnimation(LedStrip ledStrip, LLColor firstColor, LLColor secondColor) {
         super(ledStrip);
         currentColorHSV = firstColor.toHSV();
         generatedHashmap.put(super.LEDStripLength, firstColor);
@@ -37,18 +33,17 @@ public class FadeBetween2ColorsAnimation extends Animation {
 
         firstColorHSV = firstColor.toHSV();
         secondColorHSV = secondColor.toHSV();
-
-        deltaHue = evalIncrementDirection(firstColorHSV.get("H"), firstColorHSV.get("H"), LEDStripLength);
-        deltaSaturation = evalIncrementDirection(firstColorHSV.get("S"), firstColorHSV.get("S"), LEDStripLength);
-        deltaValue = evalIncrementDirection(firstColorHSV.get("V"), firstColorHSV.get("V"), LEDStripLength);
     }
+
     /**
-     * @param ledStrip The LED strip this is displaying on.
-     * @param firstColor The color it starts the fade on.
-     * @param secondColor The color it initially fades to.
-     * @param minUpdatePeriod the number of seconds it takes to change the color one step
+     * @param ledStrip        The LED strip this is displaying on.
+     * @param firstColor      The color it starts the fade on.
+     * @param secondColor     The color it initially fades to.
+     * @param minUpdatePeriod the number of seconds it takes to change the color one
+     *                        step
      */
-    public FadeBetween2ColorsAnimation(Led ledStrip, LLLColor firstColor, LLLColor secondColor, double minUpdatePeriod) {
+    public FadeBetween2ColorsAnimation(LedStrip ledStrip, LLColor firstColor, LLColor secondColor,
+            double minUpdatePeriod) {
         super(ledStrip, minUpdatePeriod);
         currentColorHSV = firstColor.toHSV();
         generatedHashmap.put(super.LEDStripLength, firstColor);
@@ -58,10 +53,6 @@ public class FadeBetween2ColorsAnimation extends Animation {
 
         firstColorHSV = firstColor.toHSV();
         secondColorHSV = secondColor.toHSV();
-
-        deltaHue = evalIncrementDirection(firstColorHSV.get("H"), firstColorHSV.get("H"), LEDStripLength);
-        deltaSaturation = evalIncrementDirection(firstColorHSV.get("S"), firstColorHSV.get("S"), LEDStripLength);
-        deltaValue = evalIncrementDirection(firstColorHSV.get("V"), firstColorHSV.get("V"), LEDStripLength);
     }
 
     public void reset() {
@@ -76,13 +67,25 @@ public class FadeBetween2ColorsAnimation extends Animation {
     @Override
     public HashMap<Integer, Color> generatePattern() {
         if (isgoingToSecond) {
-            currentColor = LLLColor.fromHSV(firstColorHSV.get("H") + deltaHue, firstColorHSV.get("S") + deltaSaturation,
-                    firstColorHSV.get("V") + deltaValue);
+            currentColor = LLColor.fromHSV((currentColorHSV.get('H') +
+                    evalIncrementDirection(currentColorHSV.get('H'), secondColorHSV.get('H'), LLColor.HUE_MAX)),
+                    (currentColorHSV.get('S') +
+                            evalIncrementDirection(currentColorHSV.get('S'), secondColorHSV.get('S'),
+                                    LLColor.SATURATION_MAX)),
+                    (currentColorHSV.get('H') +
+                            evalIncrementDirection(currentColorHSV.get('V'), secondColorHSV.get('V'),
+                                    LLColor.VALUE_MAX)));
             if (currentColor == secondColor)
                 isgoingToSecond = false;
         } else {
-            currentColor = LLLColor.fromHSV(firstColorHSV.get("H") - deltaHue, firstColorHSV.get("S") - deltaSaturation,
-                    firstColorHSV.get("V") - deltaValue);
+            currentColor = LLColor.fromHSV((currentColorHSV.get('H') +
+                    evalIncrementDirection(currentColorHSV.get('H'), firstColorHSV.get('H'), LLColor.HUE_MAX)),
+                    (currentColorHSV.get('S') +
+                            evalIncrementDirection(currentColorHSV.get('S'), firstColorHSV.get('S'),
+                                    LLColor.SATURATION_MAX)),
+                    (currentColorHSV.get('H') +
+                            evalIncrementDirection(currentColorHSV.get('V'), firstColorHSV.get('V'),
+                                    LLColor.VALUE_MAX)));
             if (currentColor == firstColor)
                 isgoingToSecond = true;
         }
@@ -94,17 +97,16 @@ public class FadeBetween2ColorsAnimation extends Animation {
 
     /**
      * Finds the direction to increment from the first to the second value in the
-     * fastest way
+     * fastest way. It wraps the value around the range 0 to maxValue.
+     * Evaluation method is inspiered by WPIlib PID controller value wrapping.
      * 
-     * @param firstValue
-     * @param secondValue
-     * @param maxValue
-     * @return The the smallest delta.
+     * @param firstValue  The value you are starting at.
+     * @param secondValue The value are going to.
+     * @param maxValue    The maximum value for the object the values correspond to;
+     *                    the point at which they wrap around.
+     * @return The increment or decrement, as 0, 1, or -1.
      */
-    public int evalIncrementDirection(int firstValue, int secondValue, int maxValue) {
-        if (Math.abs(firstValue - secondValue) > Math.abs((maxValue - firstValue) - secondValue)) {
-            return -(int) Math.signum(firstValue - secondValue);
-        } else
-            return -(int) Math.signum((maxValue - firstValue) - secondValue);
+    private int evalIncrementDirection(int firstValue, int secondValue, int maxValue) {
+        return -(int) Math.signum(MathUtil.inputModulus(firstValue - secondValue, -(maxValue / 2), (maxValue / 2)));
     }
 }

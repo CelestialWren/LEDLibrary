@@ -2,14 +2,16 @@ package frc;
 
 import java.util.HashMap;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
 
-public class LLLColor extends Color {
-  public static int HUE_MAX = 180;
-  public static int SATURATION_MAX = 255;
-  public static int VALUE_MAX = 255;
+public class LLColor extends Color {
+  public static final int HUE_MAX = 180;
+  public static final int SATURATION_MAX = 255;
+  public static final int VALUE_MAX = 255;
+  public static final int RGB_MAX = 255;
 
-  public LLLColor(int red, int green, int blue) {
+  public LLColor(int red, int green, int blue) {
     super(red, green, blue);
   }
 
@@ -24,11 +26,11 @@ public class LLLColor extends Color {
    *         </p>
    *         B is the blue value and ranges from 0-255.
    */
-  public HashMap<String, Integer> toRGB() {
-    HashMap<String, Integer> map = new HashMap<String, Integer>();
-    map.put("R", (int) (red * 255));
-    map.put("G", (int) (green * 255));
-    map.put("B", (int) (blue * 255));
+  public HashMap<Character, Integer> toRGB() {
+    HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+    map.put('R', (int) (red * 255));
+    map.put('G', (int) (green * 255));
+    map.put('B', (int) (blue * 255));
     return map;
   }
 
@@ -58,18 +60,36 @@ public class LLLColor extends Color {
    *         </p>
    *         V is the value or brightness and ranges from 0-255.
    */
-  public HashMap<String, Integer> toHSV() {
-    HashMap<String, Integer> map = new HashMap<String, Integer>();
+  public HashMap<Character, Integer> toHSV() {
+    HashMap<Character, Integer> map = new HashMap<Character, Integer>();
     float[] hsv = java.awt.Color.RGBtoHSB(getRed(), getGreen(), getBlue(), null);
-    map.put("H", (int) (hsv[0]) * 180);
-    map.put("S", (int) (hsv[1]) * 255);
-    map.put("V", (int) (hsv[2]) * 255);
+    map.put('H', (int) (hsv[0]) * 180);
+    map.put('S', (int) (hsv[1]) * 255);
+    map.put('V', (int) (hsv[2]) * 255);
     return map;
-
   }
 
+  public int getHue(){
+     return (int) (java.awt.Color.RGBtoHSB(getRed(), getGreen(), getBlue(), null)[0] * 180);
+  }
+
+  public int getSaturation(){
+    return (int) (java.awt.Color.RGBtoHSB(getRed(), getGreen(), getBlue(), null)[0] * 255);
+ }
+
+ public int getValue(){
+  return (int) (java.awt.Color.RGBtoHSB(getRed(), getGreen(), getBlue(), null)[0] * 255);
+}
+
+  public static HashMap<Character, Integer> replaceHSVElement(HashMap<Character, Integer> hsv, Character key, int value){
+    hsv.remove(key);
+    hsv.put(key, value);
+    return hsv;
+  }
+
+
   /**
-   * Creates a LLLColor from HSV values.
+   * Creates a LLColor from HSV values.
    * Copied from the method of the same name in WPIlib's color class to enable
    * compatability with my other custom methods.
    *
@@ -78,7 +98,12 @@ public class LLLColor extends Color {
    * @param v The v value [0-255]
    * @return The color
    */
-  public static LLLColor fromHSV(int h, int s, int v) {
+  public static LLColor fromHSV(int h, int s, int v) {
+    //Wrap hue, saturation, and value to proper range to prevent need for overflow management code in the individual animations
+    h = (int)MathUtil.inputModulus(h, 0, HUE_MAX);
+    s = (int)MathUtil.inputModulus(s, 0, SATURATION_MAX);
+    v = (int)MathUtil.inputModulus(v, 0, VALUE_MAX);
+
     // Loosely based on
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
     // The hue range is split into 60 degree regions where in each region there
@@ -102,17 +127,25 @@ public class LLLColor extends Color {
 
     switch (region) {
       case 0:
-        return new LLLColor(v, X + m, m);
+        return new LLColor(v, X + m, m);
       case 1:
-        return new LLLColor(v - X, v, m);
+        return new LLColor(v - X, v, m);
       case 2:
-        return new LLLColor(m, v, X + m);
+        return new LLColor(m, v, X + m);
       case 3:
-        return new LLLColor(m, v - X, v);
+        return new LLColor(m, v - X, v);
       case 4:
-        return new LLLColor(X + m, m, v);
+        return new LLColor(X + m, m, v);
       default:
-        return new LLLColor(v, m, v - X);
+        return new LLColor(v, m, v - X);
     }
   }
+
+  public static LLColor fromHSV(HashMap<Character, Integer> hashMap){
+    int hue = hashMap.get('H');
+    int saturation = hashMap.get('S');
+    int value = hashMap.get('V');
+    return fromHSV(hue, saturation, value);
+  }
+
 }

@@ -7,7 +7,7 @@ package frc.Animations;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.Led;
+import frc.LedStrip;
 
 /** Add your docs here. */
 public class BounceAnimation extends Animation {
@@ -17,17 +17,19 @@ public class BounceAnimation extends Animation {
     int bouncePositionLower = 0;
     int bounceLength;
     boolean isGoingUp = true;
-    //TODO: add illegal arguement protections if bounce length is bigger that the strip
-    public BounceAnimation(Led ledStrip, Color backgroundColor, Color bouncingColor, int bounceLength){
+
+    public BounceAnimation(LedStrip ledStrip, Color backgroundColor, Color bouncingColor, int bounceLength) {
         super(ledStrip);
         this.backgroundColor = backgroundColor;
         this.bouncingColor = bouncingColor;
         this.bounceLength = bounceLength;
         bouncePositionUpper = bounceLength;
+        if(bounceLength > LEDStripLength)
+            throw new IllegalArgumentException("The length of the pattern to display is longer than the LED Strip");
     }
 
     @Override
-    public void reset(){
+    public void reset() {
         super.reset();
         bouncePositionUpper = bounceLength;
         bouncePositionLower = 0;
@@ -35,15 +37,16 @@ public class BounceAnimation extends Animation {
     }
 
     @Override
-    public HashMap<Integer, Color> generatePattern(){
+    public HashMap<Integer, Color> generatePattern() {
         generatedHashmap.clear();
-        if(bouncePositionUpper == LEDStripLength)
+        if (bouncePositionUpper == LEDStripLength)
             isGoingUp = false;
-        if(isGoingUp){
+        else if (bouncePositionLower == 0)
+            isGoingUp = true;
+        if (isGoingUp) {
             bouncePositionLower++;
             bouncePositionUpper++;
-        }
-        else{
+        } else {
             bouncePositionLower--;
             bouncePositionUpper--;
         }

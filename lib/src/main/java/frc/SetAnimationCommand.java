@@ -7,18 +7,18 @@ import frc.Animations.Animation;
 public class SetAnimationCommand extends CommandBase {
     final Animation animation;
     boolean endCommand;
-    Led led;
+    LedStrip led;
     Timer time;
     double timeToRunFor = -1;
     /**A command that runs the animation passed in on the light  */
-    public SetAnimationCommand(Led led, Animation animation){
+    public SetAnimationCommand(LedStrip led, Animation animation){
         addRequirements(led);
         this.led = led;
         this.animation = animation;
         endCommand = false;
         time = new Timer();
     }
-    public SetAnimationCommand(Led led, Animation animation, double timeToRunFor){
+    public SetAnimationCommand(LedStrip led, Animation animation, double timeToRunFor){
         addRequirements(led);
         this.led = led;
         this.animation = animation;

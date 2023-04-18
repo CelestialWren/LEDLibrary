@@ -7,50 +7,47 @@ package frc.Animations;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.Led;
+import frc.LLColor;
+import frc.LedStrip;
 
 /** Add your docs here. */
 public class RainbowFadeAnimation extends Animation {
-    private int hue;
-    private int startingHue;
-    private int saturation;
-    private int value;
-    public RainbowFadeAnimation(Led ledStrip){
+   private LLColor startingColor;
+   private LLColor color;
+   private int increment = 3;
+    public RainbowFadeAnimation(LedStrip ledStrip){
         super(ledStrip);
-        hue = 60;
-        saturation = 255;
-        value = 128;
+        color = startingColor = (LLColor) Color.kBlue;
     }
 
-    public RainbowFadeAnimation(Led ledStrip, int hue){
+    public RainbowFadeAnimation(LedStrip ledStrip, LLColor color){
         super(ledStrip);
-        this.hue = hue;
-        startingHue = hue;
-        saturation = 255;
-        value = 128;
+        this.color = startingColor = color;
     }
 
-    public RainbowFadeAnimation(Led ledStrip, int hue, int saturation, int value){
+    public RainbowFadeAnimation(LedStrip ledStrip, LLColor color, int increment){
         super(ledStrip);
-        this.hue = hue = startingHue;
-        this.saturation = saturation;
-        this.value = value;
+        this.color = startingColor = color;
+        this.increment = increment;
+    }
+
+    public RainbowFadeAnimation(LedStrip ledStrip, int increment){
+        super(ledStrip);
+        color = startingColor = (LLColor) Color.kBlue;
+        this.increment = increment;
     }
 
 
     @Override
     public void reset(){
         super.reset();
-        hue = startingHue;
+        color = startingColor;
     }
 
     @Override
     public HashMap<Integer, Color> generatePattern() {
-        hue += 1;
-        //180 is the max value for a hue in HSV
-        if(hue == 180)
-            hue = 0;
-        generatedHashmap.put(LEDStripLength, Color.fromHSV(hue, saturation, value));
+       color = LLColor.fromHSV(LLColor.replaceHSVElement(color.toHSV(), 'H', color.getHue()+increment));
+        generatedHashmap.put(LEDStripLength, color);
         return generatedHashmap;
     }
 

@@ -168,7 +168,10 @@ simgui.json
 simgui-ds.json
 .vscode/settings.json
 *.wpilog
-
+*.bin
+*.lock
 # Do not ignore external libraries
 
 !libs/*.jar
+.gradle/7.5.1/fileHashes/resourceHashesCache.bin
+lib/.DS_Store
