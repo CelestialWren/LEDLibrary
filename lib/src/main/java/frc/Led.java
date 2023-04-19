@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Animations.Animation;
@@ -16,12 +17,14 @@ import frc.Animations.Animation;
 public class Led extends SubsystemBase {
   private final AddressableLED led;
   private final AddressableLEDBuffer ledBuffer;
+  private final AddressableLEDSim ledSim;
   private Animation currentAnimation;
   private boolean runningAutomation = false;
   /** Creates a new Led. */
   public Led(int DIO_Port, int stripLength) {
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
     led.setLength(ledBuffer.getLength());
     setEntireStripToColor(Color.kBlack);
     led.start();
@@ -30,8 +33,10 @@ public class Led extends SubsystemBase {
   public Led(int DIO_Port, int stripLength, Color colorToIntializeTo) {
     ledBuffer = new AddressableLEDBuffer(stripLength);
     led = new AddressableLED(DIO_Port);
+    ledSim = new AddressableLEDSim(led);
+    ledSim.setRunning(true);
     led.setLength(ledBuffer.getLength());
-    setEntireStripToColor(Color.kBlack);
+    setEntireStripToColor(colorToIntializeTo);
     led.start();
   }
 
@@ -40,6 +45,8 @@ public class Led extends SubsystemBase {
     // This method will be called once per scheduler run
     if(runningAutomation)
       setStripToMultipleColors(currentAnimation.generatePattern());
+
+    
   }
 
   public void setEntireStripToColor(Color color){
