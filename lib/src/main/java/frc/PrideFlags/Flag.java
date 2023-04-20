@@ -6,6 +6,8 @@ import java.util.HashMap;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.LLColor;
 import frc.LedStrip;
+import frc.PrideFlags.Section.FlagSection;
+import frc.PrideFlags.Section.ScaledFlagSection;
 
 public class Flag {
     private ArrayList<FlagSection> flagSections = new ArrayList<>();
@@ -30,6 +32,20 @@ public class Flag {
         for (FlagSection section : flagSections) {
             totalLength += (int) (section.getSectionFraction() * strip.getStripLength());
             generatedProportions.put(totalLength, section.getSectionColor());
+        }
+        return generatedProportions;
+    }
+
+    public ArrayList<FlagSection> getFlagSections() {
+        return flagSections;
+    }
+
+    public ArrayList<ScaledFlagSection> generateSectionsScaled(LedStrip strip) {
+        ArrayList<ScaledFlagSection> generatedProportions = new ArrayList<>();
+        int totalLength = 0;
+        for (FlagSection section : flagSections) {
+            totalLength += (int) (section.getSectionFraction() * strip.getStripLength());
+            generatedProportions.add(new ScaledFlagSection(section, totalLength));
         }
         return generatedProportions;
     }

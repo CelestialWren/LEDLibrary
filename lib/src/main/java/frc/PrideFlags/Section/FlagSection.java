@@ -1,4 +1,4 @@
-package frc.PrideFlags;
+package frc.PrideFlags.Section;
 
 import frc.LLColor;
 

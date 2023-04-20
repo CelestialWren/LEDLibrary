@@ -20,28 +20,29 @@ public class RaceAnimation extends Animation {
         this.raceColor = raceColor;
         this.raceLength = raceLength;
         this.raceGap = raceGap;
-        if((raceLength > LEDStripLength) || (raceGap > LEDStripLength)){
+        if ((raceLength > LEDStripLength) || (raceGap > LEDStripLength))
             throw new IllegalArgumentException("The length of the pattern to display is longer than the LED Strip.");
+        else {
+            generatedHashmap.put(raceLength, raceColor);
+            generatedHashmap.put(LEDStripLength, backgroundColor);
         }
     }
 
     @Override
     public void reset() {
         super.reset();
-        generatedHashmap = null;
     }
 
     @Override
     public HashMap<Integer, Color> generatePattern() {
-        if (generatedHashmap == null) {
+        if (generatedHashmap.size() == 0) {
             generatedHashmap.put(raceLength, raceColor);
             generatedHashmap.put(LEDStripLength, backgroundColor);
         } else {
             // Increment existing strips
             for (int stripEnd : generatedHashmap.keySet()) {
                 replaceElementKey(stripEnd, stripEnd + 1);
-            }
-            for (int stripEnd : generatedHashmap.keySet()) {
+
                 // Need to Generate a new background strip
                 if ((stripEnd == raceLength + 1) && (generatedHashmap.get(stripEnd) == raceColor))
                     generatedHashmap.put(1, backgroundColor);
@@ -49,11 +50,11 @@ public class RaceAnimation extends Animation {
                 // Need to generate new race strip
                 else if ((stripEnd == raceGap + 1) && (generatedHashmap.get(stripEnd) == backgroundColor))
                     generatedHashmap.put(1, raceColor);
-                
-                //Remove strips that are not visable
-                else if(stripEnd == LEDStripLength + raceLength && (generatedHashmap.get(stripEnd) == raceColor))
+
+                // Remove strips that are not visable
+                if (stripEnd == LEDStripLength + raceLength && (generatedHashmap.get(stripEnd) == raceColor))
                     generatedHashmap.remove(stripEnd);
-                else if(stripEnd == LEDStripLength + raceGap && (generatedHashmap.get(stripEnd) == backgroundColor))
+                if (stripEnd == LEDStripLength + raceGap && (generatedHashmap.get(stripEnd) == backgroundColor))
                     generatedHashmap.remove(stripEnd);
             }
         }

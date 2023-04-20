@@ -81,4 +81,8 @@ public abstract class Animation {
         generatedHashmap.put(newKey, storedColor);
     }
 
+    public LedStrip getLedStrip() {
+        return ledStrip;
+    }
+
 }
