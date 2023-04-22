@@ -168,23 +168,7 @@ simgui.json
 simgui-ds.json
 .vscode/settings.json
 *.wpilog
-*.bin
-*.lock
 
 # Do not ignore external libraries
-!libs/*.jar
 
-#Auto-genned by Ungit
-.gradle/7.5.1/fileHashes/resourceHashesCache.bin
-lib/.DS_Store
-lib/bin/main/frc/Animations/Animation.class
-lib/bin/main/frc/Animations/BounceAnimation.class
-lib/bin/main/frc/Animations/RaceAnimation.class
-lib/bin/main/frc/Animations/RainbowFadeAnimation.class
-lib/bin/main/frc/Animations/RainbowRaceAnimation.class
-lib/bin/main/frc/.DS_Store
-lib/src/main/java/frc/.DS_Store
-lib/bin/main/frc/Animations/Animation.class
-lib/bin/main/frc/Animations/RaceAnimation.class
-lib/bin/main/frc/Animations/Animation.class
-lib/bin/main/frc/Animations/RaceAnimation.class
+!libs/*.jar
