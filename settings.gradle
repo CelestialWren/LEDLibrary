@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'TestLibrary'
-include('LEDLib')
+include('lib')
