@@ -7,7 +7,7 @@ A simple LED driver to abstract the base code of LEDs in WPIlib. It uses a subsy
 3. JAR should be placed into the build folder
 
 ## Adding to Build System
-Credit for this system of atting libraries without using WPIlib jsons goes to Dannie on team 4272, Maverick Boiler Robotics.
+Credit for this system of adding libraries without using WPIlib jsons goes to Dannie on team 4272, Maverick Boiler Robotics.
 Their code is great! You can find it here: https://github.com/maverick-boiler-robotics-team-4272
 
 1. Create a folder called libs in the root directory of the project
