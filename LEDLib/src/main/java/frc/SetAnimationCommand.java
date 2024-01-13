@@ -1,10 +1,10 @@
 package frc;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.Animations.Animation;
 
-public class SetAnimationCommand extends Command {
+public class SetAnimationCommand extends CommandBase {
     final Animation animation;
     boolean endCommand;
     LedStrip led;

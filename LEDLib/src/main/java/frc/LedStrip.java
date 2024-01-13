@@ -22,7 +22,7 @@ public class LedStrip extends SubsystemBase {
 	private final AddressableLEDSim ledSim;
 	private final AddressableLED led;
 	private AddressableLEDBuffer ledBuffer;
-	public Animation currentAnimation;
+	public Animation currentAnimation = new SolidColorPattern(this, PredefinedColors.kBlack);
 	private boolean runningAutomation = false;
 	private boolean usingScheduler = false;
 	private LedScheduler scheduler;
@@ -32,13 +32,11 @@ public class LedStrip extends SubsystemBase {
 		ledBuffer = new AddressableLEDBuffer(stripLength);
 		led = new AddressableLED(DIO_Port);
 		ledSim = new AddressableLEDSim(led);
-		led.setLength(ledBuffer.getLength());
 
+		led.setLength(ledBuffer.getLength());
+		setEntireStripToColor(Color.kBlack);
 		led.start();
 		ledSim.setRunning(true);
-
-		currentAnimation = new SolidColorPattern(this, PredefinedColors.kBlack);
-		startAnimation();
 	}
 
 	public LedStrip(int DIO_Port, int stripLength, LedScheduler scheduler) {
